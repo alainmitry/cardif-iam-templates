@@ -33,6 +33,30 @@ resource "ibm_iam_access_group" "ag_dev" {
   description = "Application/Project ${var.appli_name} - Access with DEVelopper privileges"
 }
 
+## Set of access to the RG for the AG ADMIN&DEV
+resource "ibm_iam_access_group_policy" "adm_access_rg" {
+  access_group_id = "${ibm_iam_access_group.ag_adm.id}"
+  roles        = "${var.privs_PlatformServices_Adm}"
+
+  resources = [
+     {
+      resource_type = "resource-group"
+      resource = "${ibm_resource_group.rg.id}"
+     }
+  ]
+}
+
+resource "ibm_iam_access_group_policy" "dev_access_rg" {
+  access_group_id = "${ibm_iam_access_group.ag_dev.id}"
+  roles        = "${var.privs_PlatformServices_Dev}"
+
+  resources = [
+    {
+      resource_type = "resource-group"
+      resource = "${ibm_resource_group.rg.id}"
+    }
+  ]
+}
 
 ## Set of policies where Platform and Services privs are needed for the AG ADMIN&DEV (Inside RG)
 resource "ibm_iam_access_group_policy" "adm_inside_ps_rg" {
